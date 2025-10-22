@@ -1,8 +1,9 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
+from src.connection import Base
 
 
-class TipoDeGasto():
+class TipoDeGasto(Base):
     __tablename__ = 'tipos_de_gasto'
 
     id = Column(Integer, primary_key=True, autoincrement=True)

@@ -1,9 +1,22 @@
 from logging.config import fileConfig
+import os
+import sys
+from dotenv import load_dotenv
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
+
+# Adicionar o diretório raiz ao path
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+
+# Carregar variáveis de ambiente
+load_dotenv()
+
+# Importar os modelos
+from src.models import Base
+from src.connection import Base as ConnectionBase
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -16,9 +29,13 @@ if config.config_file_name is not None:
 
 # add your model's MetaData object here
 # for 'autogenerate' support
-# from myapp import mymodel
-# target_metadata = mymodel.Base.metadata
-target_metadata = None
+target_metadata = Base.metadata
+
+# Configurar URL do banco de dados a partir das variáveis de ambiente
+def get_url():
+    return f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
+
+config.set_main_option("sqlalchemy.url", get_url())
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

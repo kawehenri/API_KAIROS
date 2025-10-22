@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KAIROS - Controle de Gastos</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-wallet"></i> KAIROS</h1>
+                <p>Controle de Gastos Pessoais</p>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-tab="dashboard">
+                <i class="fas fa-chart-pie"></i> Dashboard
+            </button>
+            <button class="nav-tab" data-tab="tipos">
+                <i class="fas fa-tags"></i> Tipos de Gasto
+            </button>
+            <button class="nav-tab" data-tab="registros">
+                <i class="fas fa-receipt"></i> Registros
+            </button>
+        </nav>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <div class="dashboard-grid">
+                <div class="card">
+                    <h3><i class="fas fa-chart-line"></i> Resumo</h3>
+                    <div class="stats">
+                        <div class="stat">
+                            <span class="stat-label">Total de Gastos</span>
+                            <span class="stat-value" id="total-gastos">R$ 0,00</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Tipos de Gasto</span>
+                            <span class="stat-value" id="total-tipos">0</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Registros</span>
+                            <span class="stat-value" id="total-registros">0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3><i class="fas fa-clock"></i> Últimos Gastos</h3>
+                    <div id="ultimos-gastos" class="ultimos-gastos">
+                        <p>Carregando...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tipos de Gasto Tab -->
+        <div id="tipos" class="tab-content">
+            <div class="section-header">
+                <h2><i class="fas fa-tags"></i> Tipos de Gasto</h2>
+                <button class="btn btn-primary" onclick="showAddTipoModal()">
+                    <i class="fas fa-plus"></i> Novo Tipo
+                </button>
+            </div>
+            
+            <div class="card">
+                <div id="tipos-list" class="list-container">
+                    <p>Carregando tipos de gasto...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Registros Tab -->
+        <div id="registros" class="tab-content">
+            <div class="section-header">
+                <h2><i class="fas fa-receipt"></i> Registros de Gasto</h2>
+                <button class="btn btn-primary" onclick="showAddRegistroModal()">
+                    <i class="fas fa-plus"></i> Novo Registro
+                </button>
+            </div>
+            
+            <div class="card">
+                <div id="registros-list" class="list-container">
+                    <p>Carregando registros...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Adicionar Tipo de Gasto -->
+    <div id="addTipoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-tag"></i> Novo Tipo de Gasto</h3>
+                <span class="close" onclick="closeModal('addTipoModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="addTipoForm">
+                    <div class="form-group">
+                        <label for="tipoDescricao">Descrição:</label>
+                        <input type="text" id="tipoDescricao" name="descricao" required 
+                               placeholder="Ex: Alimentação, Transporte, Lazer...">
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('addTipoModal')">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Salvar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Adicionar Registro -->
+    <div id="addRegistroModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-receipt"></i> Novo Registro de Gasto</h3>
+                <span class="close" onclick="closeModal('addRegistroModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="addRegistroForm">
+                    <div class="form-group">
+                        <label for="registroValor">Valor (R$):</label>
+                        <input type="number" id="registroValor" name="vlr_gasto" step="0.01" min="0.01" required 
+                               placeholder="0,00">
+                    </div>
+                    <div class="form-group">
+                        <label for="registroTipo">Tipo de Gasto:</label>
+                        <select id="registroTipo" name="fk_tipo_gasto" required>
+                            <option value="">Selecione um tipo...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="registroObservacao">Observação:</label>
+                        <textarea id="registroObservacao" name="observacao" rows="3" 
+                                  placeholder="Descrição do gasto..."></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('addRegistroModal')">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Salvar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading" class="loading-overlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Carregando...</p>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
